@@ -12,7 +12,7 @@ public class FoodListener {
     private static int badBreathTicks = 0;
 
     public static void register() {
-        // Eating food → permanent bad breath
+        // PERMANANT BAD BREATH EWWWWWW
         UseItemCallback.EVENT.register((player, world, hand) -> {
             ItemStack stack = player.getStackInHand(hand);
 
@@ -21,7 +21,7 @@ public class FoodListener {
                 player.addStatusEffect(new StatusEffectInstance(BadBreathMod.BAD_BREATH, Integer.MAX_VALUE, 0, false, true));
             }
 
-            // Drinking water → cure
+            // drinking tasty h2O is da cure
             if (stack.isOf(Items.POTION) &&
                 stack.getOrCreateNbt().getString("Potion").equals("minecraft:water")) {
                 player.removeStatusEffect(BadBreathMod.BAD_BREATH);
@@ -31,7 +31,7 @@ public class FoodListener {
             return TypedActionResult.pass(stack);
         });
 
-        // Every tick → increment timer and update amplifier
+        // every tick makes your breath worseeeee
         ServerTickEvents.END_WORLD_TICK.register(world -> {
             world.getPlayers().forEach(player -> {
                 if (player.hasStatusEffect(BadBreathMod.BAD_BREATH)) {
