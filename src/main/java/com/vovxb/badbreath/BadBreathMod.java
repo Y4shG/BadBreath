@@ -5,25 +5,24 @@ import com.vovxb.badbreath.event.FoodListener;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.entity.effect.StatusEffect;
 
 public class BadBreathMod implements ModInitializer {
     public static final String MODID = "badbreath";
 
-    public static RegistryEntry<BadBreathEffect> BAD_BREATH;
+    public static StatusEffect BAD_BREATH;
 
     @Override
     public void onInitialize() {
-        // status
+        // Register status effect
         BAD_BREATH = Registry.register(
                 Registries.STATUS_EFFECT,
                 new Identifier(MODID, "bad_breath"),
                 new BadBreathEffect()
         );
 
-        // lizter
+        // Register item use and tick listeners
         FoodListener.register();
     }
 }
