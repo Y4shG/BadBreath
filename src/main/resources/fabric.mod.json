@@ -3,7 +3,7 @@
   "id": "badbreath",
   "version": "1.0.0",
   "name": "Bad Breath Mod",
-  "description": "Adds permanent bad breath after eating food. Drink water to cure it.",
+  "description": "Permanent bad breath effect after eating. Drink water to cure.",
   "authors": ["vovxb"],
   "license": "CC0",
   "environment": "*",
