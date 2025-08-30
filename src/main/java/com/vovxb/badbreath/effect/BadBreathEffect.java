@@ -15,11 +15,11 @@ public class BadBreathEffect extends StatusEffect {
         super(StatusEffectCategory.HARMFUL, 0x00FF00); // green color
     }
 
-    @Override
+    // Called each tick
     public void applyUpdateEffect(LivingEntity entity, StatusEffectInstance effect) {
         int ticksElapsed = effect.getAmplifier();
 
-        // Scaling damage and radius
+        // Damage and range scaling
         float damage = 1.0F + (ticksElapsed / 600.0F);
         double radius = 2.0D + (ticksElapsed / 1200.0D);
 
@@ -29,12 +29,12 @@ public class BadBreathEffect extends StatusEffect {
             Box box = entity.getBoundingBox().expand(radius);
             world.getOtherEntities(entity, box).forEach(e -> {
                 if (e instanceof LivingEntity living && living != entity) {
-                    // MAGIC damage
-                    living.damage(DamageSource.MAGIC, damage);
+                    // Apply damage
+                    living.damage(DamageSource.indirectMagic(entity, entity), damage);
                 }
             });
         } else {
-            // Spit particles (green slime)
+            // Spawn particles client-side
             for (int i = 0; i < 5; i++) {
                 world.addParticle(
                         ParticleTypes.ITEM_SLIME,
@@ -51,6 +51,6 @@ public class BadBreathEffect extends StatusEffect {
 
     @Override
     public boolean canApplyUpdateEffect(int duration, int amplifier) {
-        return true; // always tick
+        return true; // Always tick
     }
 }
