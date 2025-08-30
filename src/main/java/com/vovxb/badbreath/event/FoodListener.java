@@ -5,24 +5,26 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.FoodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.potion.PotionUtil;
+import net.minecraft.item.FoodComponent;
+import net.minecraft.item.PotionItem;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ActionResult;
+import net.minecraft.world.World;
 
 public class FoodListener {
 
     private static int badBreathTicks = 0;
 
     public static void register() {
-        UseItemCallback.EVENT.register((PlayerEntity player, net.minecraft.world.World world, Hand hand) -> {
+        UseItemCallback.EVENT.register((PlayerEntity player, World world, Hand hand) -> {
             ItemStack stack = player.getStackInHand(hand);
 
-            // Check if item is food
-            if (stack.getItem() instanceof FoodItem) {
+            // Check if the item is food
+            FoodComponent food = stack.getItem().getFoodComponent();
+            if (food != null) {
                 badBreathTicks = 0;
                 player.addStatusEffect(new StatusEffectInstance(
                         BadBreathMod.BAD_BREATH,
@@ -33,9 +35,9 @@ public class FoodListener {
                 ));
             }
 
-            // Water potion cures bad breath
-            if (stack.isOf(Items.POTION)) {
-                if (PotionUtil.getPotion(stack) == Potions.WATER) {
+            // Check if it’s a water potion
+            if (stack.getItem() instanceof PotionItem potionItem) {
+                if (potionItem.getPotion(stack) == Potions.WATER) {
                     player.removeStatusEffect(BadBreathMod.BAD_BREATH);
                     badBreathTicks = 0;
                 }
@@ -44,7 +46,7 @@ public class FoodListener {
             return ActionResult.PASS;
         });
 
-        // Each tick increases amplifier
+        // Increase bad breath ticks every world tick
         ServerTickEvents.END_WORLD_TICK.register(world -> {
             world.getPlayers().forEach(player -> {
                 if (player.hasStatusEffect(BadBreathMod.BAD_BREATH)) {
