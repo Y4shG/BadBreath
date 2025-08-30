@@ -15,14 +15,14 @@ public class BadBreathMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        // Register bad breath status effect
+        // Register the bad breath effect
         BAD_BREATH = Registry.register(
                 Registries.STATUS_EFFECT,
                 new Identifier(MODID, "bad_breath"),
                 new BadBreathEffect()
         );
 
-        // Register the food and tick listeners
+        // Register food and tick events
         FoodListener.register();
     }
 }
