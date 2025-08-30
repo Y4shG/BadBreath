@@ -1,41 +1,21 @@
 {
-	"schemaVersion": 1,
-	"id": "badbreath",
-	"version": "${version}",
-	"name": "badbreath",
-	"description": "This is an example description! Tell everyone what your mod is about!",
-	"authors": [
-		"Me!"
-	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "CC0-1.0",
-	"icon": "assets/badbreath/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"com.vovxb.badbreath.Badbreath"
-		],
-		"client": [
-			"com.vovxb.badbreath.BadbreathClient"
-		]
-	},
-	"mixins": [
-		"badbreath.mixins.json",
-		{
-			"config": "badbreath.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.17.2",
-		"minecraft": "~1.21.8",
-		"java": ">=21",
-		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
-	}
+  "schemaVersion": 1,
+  "id": "badbreath",
+  "version": "1.0.0",
+  "name": "Bad Breath Mod",
+  "description": "Adds permanent bad breath after eating food. Drink water to cure it.",
+  "authors": ["vovxb"],
+  "license": "CC0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.vovxb.badbreath.BadBreathMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.21.8",
+    "java": ">=17",
+    "fabric": "*"
+  }
 }
