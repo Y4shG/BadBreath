@@ -5,7 +5,7 @@
   "name": "Bad Breath Mod",
   "description": "Permanent bad breath effect after eating. Drink water to cure.",
   "authors": ["vovxb"],
-  "license": "CC0",
+  "license": "MIT",
   "environment": "*",
   "entrypoints": {
     "main": [
