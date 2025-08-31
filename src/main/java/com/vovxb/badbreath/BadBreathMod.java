@@ -10,12 +10,13 @@ import net.minecraft.util.Identifier;
 
 public class BadBreathMod implements ModInitializer {
     public static final String MODID = "badbreath";
-    public static net.minecraft.registry.entry.RegistryEntry<StatusEffect> BAD_BREATH;
+    public static StatusEffect BAD_BREATH;
 
     @Override
     public void onInitialize() {
         // hmmm effecty boy give me bad stinky breath
-        BAD_BREATH = Registries.STATUS_EFFECT.register(
+        BAD_BREATH = Registry.register(
+            Registries.STATUS_EFFECT,
             new Identifier(MODID, "bad_breath"),
             new BadBreathEffect()
         );
