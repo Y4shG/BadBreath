@@ -13,7 +13,7 @@ public class BadBreathEffect extends StatusEffect {
     }
 
     @Override
-    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
+    public void applyEffectTick(LivingEntity entity, int amplifier) {
         World world = entity.getWorld();
         StatusEffectInstance instance = entity.getStatusEffect(this);
         if (instance == null) return;
@@ -28,25 +28,23 @@ public class BadBreathEffect extends StatusEffect {
             world.getOtherEntities(entity, entity.getBoundingBox().expand(radius))
                 .forEach(e -> {
                     if (e instanceof LivingEntity living && living != entity) {
-                living.damage(net.minecraft.entity.damage.DamageSources.magic(entity), damage);
+                        living.damage(net.minecraft.entity.damage.DamageSource.MAGIC, damage);
                     }
                 });
         } else {
             // Green particles for da bad breath stinky
-            world.spawnParticles(ParticleTypes.ITEM_SLIME,
-                entity.getX(),
-                entity.getEyeY(),
-                entity.getZ(),
-                1,
-                (world.random.nextDouble() - 0.5) * 0.2,
-                0.05,
-                (world.random.nextDouble() - 0.5) * 0.2,
-                0.0);
+            world.addParticle(ParticleTypes.ITEM_SLIME,
+                    entity.getX(),
+                    entity.getEyeY(),
+                    entity.getZ(),
+                    (world.random.nextDouble() - 0.5) * 0.2,
+                    0.05,
+                    (world.random.nextDouble() - 0.5) * 0.2);
         }
     }
 
     @Override
-    public boolean canApplyUpdateEffect(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         return true; // always tick
     }
 }
