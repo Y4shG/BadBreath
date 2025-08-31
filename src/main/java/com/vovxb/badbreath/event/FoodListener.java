@@ -16,21 +16,22 @@ public class FoodListener {
         UseItemCallback.EVENT.register((player, world, hand) -> {
             ItemStack stack = player.getStackInHand(hand);
 
-            if (stack.isFood()) {
+                if (stack.getItem().isFood()) {
                 badBreathTicks = 0; // reset timer
-            player.addStatusEffect(new StatusEffectInstance(
-                BadBreathMod.BAD_BREATH.get(),
-                Integer.MAX_VALUE,
-                0,
-                false,
-                true
-            ));
+                    player.addStatusEffect(new StatusEffectInstance(
+                            BadBreathMod.BAD_BREATH,
+                            Integer.MAX_VALUE,
+                            0,
+                            false,
+                            true
+                    ));
             }
 
             // mmm h2O cures da bad stinky breath
-            if (stack.isOf(Items.POTION) &&
-                stack.getOrCreateNbt().getString("Potion").equals("minecraft:water")) {
-            player.removeStatusEffect(BadBreathMod.BAD_BREATH.get());
+                if (stack.isOf(Items.POTION) &&
+                    stack.getNbt() != null &&
+                    "minecraft:water".equals(stack.getNbt().getString("Potion"))) {
+                    player.removeStatusEffect(BadBreathMod.BAD_BREATH);
                 badBreathTicks = 0;
             }
 
@@ -40,15 +41,15 @@ public class FoodListener {
         // Every tick makes your breath worse
         ServerTickEvents.END_WORLD_TICK.register(world -> {
             world.getPlayers().forEach(player -> {
-            if (player.hasStatusEffect(BadBreathMod.BAD_BREATH.get())) {
+                    if (player.hasStatusEffect(BadBreathMod.BAD_BREATH)) {
                     badBreathTicks++;
-                player.addStatusEffect(new StatusEffectInstance(
-                    BadBreathMod.BAD_BREATH.get(),
-                    Integer.MAX_VALUE,
-                    badBreathTicks, // amplifier stores time
-                    false,
-                    true
-                ));
+                        player.addStatusEffect(new StatusEffectInstance(
+                                BadBreathMod.BAD_BREATH,
+                                Integer.MAX_VALUE,
+                                badBreathTicks, // amplifier stores time
+                                false,
+                                true
+                        ));
                 }
             });
         });
