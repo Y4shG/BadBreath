@@ -16,7 +16,7 @@ public class FoodListener {
         UseItemCallback.EVENT.register((player, world, hand) -> {
             ItemStack stack = player.getStackInHand(hand);
 
-                if (stack.getItem().isFood()) {
+                if (stack.isFood()) {
                 badBreathTicks = 0; // reset timer
                     player.addStatusEffect(new StatusEffectInstance(
                             BadBreathMod.BAD_BREATH,
@@ -29,8 +29,7 @@ public class FoodListener {
 
             // mmm h2O cures da bad stinky breath
                 if (stack.isOf(Items.POTION) &&
-                    stack.getNbt() != null &&
-                    "minecraft:water".equals(stack.getNbt().getString("Potion"))) {
+                    stack.getOrCreateNbt().getString("Potion").equals("minecraft:water")) {
                     player.removeStatusEffect(BadBreathMod.BAD_BREATH);
                 badBreathTicks = 0;
             }
