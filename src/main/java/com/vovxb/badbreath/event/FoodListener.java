@@ -4,59 +4,51 @@ import com.vovxb.badbreath.BadBreathMod;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.PotionItem;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ActionResult;
-import net.minecraft.world.World;
 
 public class FoodListener {
-
     private static int badBreathTicks = 0;
 
     public static void register() {
-        // Listen for item usage
-        UseItemCallback.EVENT.register((PlayerEntity player, World world, Hand hand) -> {
+        // BAD BREATH EWWW
+        UseItemCallback.EVENT.register((player, world, hand) -> {
             ItemStack stack = player.getStackInHand(hand);
 
-            // If item is food, give bad breath
-            if (stack.getItem().getFoodComponent() != null) {
-                badBreathTicks = 0;
-                player.addStatusEffect(new StatusEffectInstance(
-                        BadBreathMod.BAD_BREATH,
-                        Integer.MAX_VALUE,
-                        0,
-                        false,
-                        true
-                ));
+            if (stack.isFood()) {
+                badBreathTicks = 0; // reset timer
+            player.addStatusEffect(new StatusEffectInstance(
+                BadBreathMod.BAD_BREATH.get(),
+                Integer.MAX_VALUE,
+                0,
+                false,
+                true
+            ));
             }
 
-            // If water potion, remove bad breath
-            if (stack.getItem() instanceof PotionItem potionItem) {
-                if (potionItem.getPotion(stack) == Potions.WATER) {
-                    player.removeStatusEffect(BadBreathMod.BAD_BREATH);
-                    badBreathTicks = 0;
-                }
+            // mmm h2O cures da bad stinky breath
+            if (stack.isOf(Items.POTION) &&
+                stack.getOrCreateNbt().getString("Potion").equals("minecraft:water")) {
+            player.removeStatusEffect(BadBreathMod.BAD_BREATH.get());
+                badBreathTicks = 0;
             }
 
             return ActionResult.PASS;
         });
 
-        // Tick event to increase bad breath over time
+        // Every tick makes your breath worse
         ServerTickEvents.END_WORLD_TICK.register(world -> {
             world.getPlayers().forEach(player -> {
-                if (player.hasStatusEffect(BadBreathMod.BAD_BREATH)) {
+            if (player.hasStatusEffect(BadBreathMod.BAD_BREATH.get())) {
                     badBreathTicks++;
-                    player.addStatusEffect(new StatusEffectInstance(
-                            BadBreathMod.BAD_BREATH,
-                            Integer.MAX_VALUE,
-                            badBreathTicks,
-                            false,
-                            true
-                    ));
+                player.addStatusEffect(new StatusEffectInstance(
+                    BadBreathMod.BAD_BREATH.get(),
+                    Integer.MAX_VALUE,
+                    badBreathTicks, // amplifier stores time
+                    false,
+                    true
+                ));
                 }
             });
         });
