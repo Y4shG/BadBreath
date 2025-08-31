@@ -37,7 +37,7 @@ public class FoodListener {
             return ActionResult.PASS;
         });
 
-        // Every tick makes your breath worses
+        // Every tick makes your breath worse
         ServerTickEvents.END_WORLD_TICK.register(world -> {
             world.getPlayers().forEach(player -> {
                     if (player.hasStatusEffect(BadBreathMod.BAD_BREATH)) {
