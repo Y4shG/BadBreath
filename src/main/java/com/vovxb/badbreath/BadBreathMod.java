@@ -1,4 +1,3 @@
-
 package com.vovxb.badbreath;
 
 import com.vovxb.badbreath.effect.BadBreathEffect;
@@ -22,16 +21,14 @@ public class BadBreathMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        BAD_BREATH = Registry.register(
-            Registries.STATUS_EFFECT,
-            Identifier.of(MODID, "bad_breath"),
-            new BadBreathEffect()
-        );
+        StatusEffect badBreathEffect = new BadBreathEffect();
+        Registry.register(Registries.STATUS_EFFECT, Identifier.of(MODID, "bad_breath"), badBreathEffect);
+        BAD_BREATH = Registries.STATUS_EFFECT.getEntry(Identifier.of(MODID, "bad_breath")).orElseThrow();
 
         // Give bad breath after eating anything
         UseItemCallback.EVENT.register((player, world, hand) -> {
             ItemStack stack = player.getStackInHand(hand);
-            if (stack.isFood()) {
+            if (stack.getItem().isFood()) {
                 player.addStatusEffect(new StatusEffectInstance(
                     BAD_BREATH,
                     20 * 60, // 1 minute duration
@@ -41,7 +38,7 @@ public class BadBreathMod implements ModInitializer {
                 ));
             }
             // Remove bad breath if drinking water bottle
-            if (stack.isOf(Items.POTION) && stack.getOrCreateNbt().getString("Potion").equals("minecraft:water")) {
+            if (stack.isOf(Items.POTION) && stack.getNbt() != null && "minecraft:water".equals(stack.getNbt().getString("Potion"))) {
                 player.removeStatusEffect(BAD_BREATH);
             }
             return ActionResult.PASS;
@@ -51,7 +48,7 @@ public class BadBreathMod implements ModInitializer {
         ServerTickEvents.END_WORLD_TICK.register(world -> {
             for (PlayerEntity player : world.getPlayers()) {
                 if (player.hasStatusEffect(BAD_BREATH)) {
-                    BadBreathEffect.spreadBadBreath(player);
+                    BadBreathEffect.spreadBadBreath(player, world);
                 }
             }
         });
