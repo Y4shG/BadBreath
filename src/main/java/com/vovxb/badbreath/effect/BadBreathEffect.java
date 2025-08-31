@@ -17,16 +17,14 @@ public class BadBreathEffect extends StatusEffect {
     public static void spreadBadBreath(PlayerEntity player, World world) {
         // Spawn green particles from mouth
         if (world.isClient) {
-            world.spawnParticles(
+            world.addParticle(
                 ParticleTypes.ITEM_SLIME,
                 player.getX(),
                 player.getEyeY(),
                 player.getZ(),
-                1,
                 (world.random.nextDouble() - 0.5) * 0.2,
                 0.05,
-                (world.random.nextDouble() - 0.5) * 0.2,
-                0.0
+                (world.random.nextDouble() - 0.5) * 0.2
             );
         }
         // Harm nearby entities
