@@ -1,3 +1,6 @@
+
+
+
 package com.vovxb.badbreath;
 
 import com.vovxb.badbreath.effect.BadBreathEffect;
@@ -28,7 +31,7 @@ public class BadBreathMod implements ModInitializer {
         // Give bad breath after eating anything
         UseItemCallback.EVENT.register((player, world, hand) -> {
             ItemStack stack = player.getStackInHand(hand);
-            if (stack.getItem().isFood()) {
+            if (stack.isFood()) {
                 player.addStatusEffect(new StatusEffectInstance(
                     BAD_BREATH,
                     20 * 60, // 1 minute duration
@@ -38,7 +41,7 @@ public class BadBreathMod implements ModInitializer {
                 ));
             }
             // Remove bad breath if drinking water bottle
-            if (stack.isOf(Items.POTION) && stack.getNbt() != null && "minecraft:water".equals(stack.getNbt().getString("Potion"))) {
+            if (stack.isOf(Items.POTION) && stack.getOrCreateNbt().getString("Potion").equals("minecraft:water")) {
                 player.removeStatusEffect(BAD_BREATH);
             }
             return ActionResult.PASS;
