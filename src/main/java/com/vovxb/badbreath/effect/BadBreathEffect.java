@@ -13,9 +13,9 @@ public class BadBreathEffect extends StatusEffect {
     }
 
     @Override
-    public void applyEffectTick(LivingEntity entity, int amplifier) {
+    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
         World world = entity.getWorld();
-        StatusEffectInstance instance = entity.getStatusEffect(this);
+        StatusEffectInstance instance = entity.getStatusEffect(com.vovxb.badbreath.BadBreathMod.BAD_BREATH);
         if (instance == null) return;
 
         int ticksElapsed = amplifier; // we use amplifier to track time
@@ -28,7 +28,7 @@ public class BadBreathEffect extends StatusEffect {
             world.getOtherEntities(entity, entity.getBoundingBox().expand(radius))
                 .forEach(e -> {
                     if (e instanceof LivingEntity living && living != entity) {
-                        living.damage(net.minecraft.entity.damage.DamageSource.MAGIC, damage);
+                        living.damage(net.minecraft.entity.damage.DamageSource.magic(entity), damage);
                     }
                 });
         } else {
@@ -44,7 +44,7 @@ public class BadBreathEffect extends StatusEffect {
     }
 
     @Override
-    public boolean isDurationEffectTick(int duration, int amplifier) {
+    public boolean canApplyUpdateEffect(int duration, int amplifier) {
         return true; // always tick
     }
 }
