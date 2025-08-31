@@ -6,44 +6,42 @@ import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.world.World;
-import net.minecraft.util.math.Box;
-import net.minecraft.entity.damage.DamageSource;
 
 public class BadBreathEffect extends StatusEffect {
-
     public BadBreathEffect() {
-        super(StatusEffectCategory.HARMFUL, 0x00FF00); // green color
+        super(StatusEffectCategory.HARMFUL, 0x00FF00); // green icon
     }
 
-    // Called every tick on entity with this effect
-    public void applyUpdateEffect(LivingEntity entity, StatusEffectInstance effect) {
-        int ticksElapsed = effect.getAmplifier();
-        float damage = 1.0F + (ticksElapsed / 600.0F);
-        double radius = 2.0D + (ticksElapsed / 1200.0D);
-
+    @Override
+    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
         World world = entity.getWorld();
+        StatusEffectInstance instance = entity.getStatusEffect(this);
+        if (instance == null) return;
+
+        int ticksElapsed = amplifier; // we use amplifier to track time
+
+        // damage players wit your stinky bad breath ewwww
+        float damage = 1.0F + (ticksElapsed / 600);      // +1 damage every 30s
+        double radius = 2.0D + (ticksElapsed / 1200.0D); // +1 block every 60s you can custmize the radius and speed if you want
 
         if (!world.isClient) {
-            // Damage nearby living entities
-            Box box = entity.getBoundingBox().expand(radius);
-            world.getOtherEntities(entity, box).forEach(e -> {
-                if (e instanceof LivingEntity living && living != entity) {
-                    living.damage(DamageSource.indirectMagic(entity, entity), damage);
-                }
-            });
+            world.getOtherEntities(entity, entity.getBoundingBox().expand(radius))
+                .forEach(e -> {
+                    if (e instanceof LivingEntity living && living != entity) {
+                living.damage(net.minecraft.entity.damage.DamageSources.magic(entity), damage);
+                    }
+                });
         } else {
-            // Spawn green slime particles on client
-            for (int i = 0; i < 5; i++) {
-                world.addParticle(
-                        ParticleTypes.ITEM_SLIME,
-                        entity.getX() + (world.random.nextDouble() - 0.5) * 0.5,
-                        entity.getEyeY(),
-                        entity.getZ() + (world.random.nextDouble() - 0.5) * 0.5,
-                        (world.random.nextDouble() - 0.5) * 0.02,
-                        0.05,
-                        (world.random.nextDouble() - 0.5) * 0.02
-                );
-            }
+            // Green particles for da bad breath stinky
+            world.spawnParticles(ParticleTypes.ITEM_SLIME,
+                entity.getX(),
+                entity.getEyeY(),
+                entity.getZ(),
+                1,
+                (world.random.nextDouble() - 0.5) * 0.2,
+                0.05,
+                (world.random.nextDouble() - 0.5) * 0.2,
+                0.0);
         }
     }
 
